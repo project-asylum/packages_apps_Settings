@@ -30,4 +30,10 @@
         android:summary="@string/use_bottom_gesture_summary"
         android:defaultValue="false" />
 
+    <Preference
+        android:key="screen_off_gestures"
+        android:title="@string/gesture_settings_title"
+        android:fragment="com.android.settings.gzosp.gestures.ScreenOffGestureFragment" />
+
+
 </PreferenceScreen>

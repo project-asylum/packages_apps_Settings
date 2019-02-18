@@ -76,7 +76,19 @@
     <string name="status_bar_battery_percentage_text_inside">Inside the icon</string>
     <string name="status_bar_battery_percentage_text_next">Next to the icon</string>
 
-    <!-- Battery styles -->
-    <string name="battery_image">Battery image</string>
-    <string name="battery_image_description">Show battery image in status bar</string>
+    <!-- Hardware keys -->
+    <string name="enable_hw_keys_title">Enable Hardware Buttons</string>
+    <string name="button_keys_title">Hardware Buttons</string>
+    <string name="keys_bindings_title">Key actions</string>
+    <string name="keys_back_title">Back key</string>
+    <string name="keys_home_title">Home key</string>
+    <string name="keys_menu_title">Menu key</string>
+    <string name="keys_assist_title">Search key</string>
+    <string name="keys_app_switch_title">App switch key</string>
+    <string name="keys_camera_title">Camera key</string>
+    <string name="keys_action_normal">Normal press</string>
+    <string name="keys_action_long">Long press</string>
+    <string name="keys_action_double">Double tap</string>
+    <string name="no_home_key">You have no button assigned any more to the \"Home\" action!\n\nThis can make your device unusable!</string>
+    <string name="disable_key_category_title">Disable %1$s</string>
 </resources>

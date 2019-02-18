@@ -16,11 +16,14 @@
 package com.android.settings.system;
 
 import android.content.Context;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.provider.SearchIndexableResource;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceGroup;
 import android.support.v7.preference.PreferenceScreen;
+import android.util.TypedValue;
+import android.view.ContextThemeWrapper;
 
 import com.android.internal.logging.nano.MetricsProto;
 import com.android.settings.R;
@@ -31,6 +34,10 @@ import com.android.settings.search.Indexable;
 
 import java.util.Arrays;
 import java.util.List;
+
+import asylum.preference.SettingPreference;
+import com.asylum.keys.parser.KeyCategory;
+import com.asylum.keys.parser.KeyParser;
 
 public class SystemDashboardFragment extends DashboardFragment {
 
@@ -69,6 +76,29 @@ public class SystemDashboardFragment extends DashboardFragment {
         return R.string.help_url_system_dashboard;
     }
 
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        super.onCreatePreferences(savedInstanceState, rootKey);
+
+        TypedValue themeTV = new TypedValue();
+        getActivity().getTheme().resolveAttribute(R.attr.preferenceTheme, themeTV, true);
+        ContextThemeWrapper contextWrapper = new ContextThemeWrapper(getActivity(), themeTV.resourceId);
+
+        for (KeyCategory category : KeyParser.parseKeys(getActivity()).values()) {
+            SettingPreference pref = new SettingPreference(contextWrapper);
+            pref.setFragment("com.android.settings.gzosp.KeyCategoryFragment");
+            pref.getExtras().putString("key", category.key);
+            pref.setTitle(category.name);
+            android.util.Log.d("TEST", "drawableId - " + category.drawableId);
+            if (category.drawableId > 0) {
+                pref.setIcon(Icon.createWithResource(contextWrapper, category.drawableId).loadDrawable(contextWrapper));
+                //pref.setIcon(contextWrapper.getResources().getDrawable(category.drawableId));
+            }
+            pref.setKey(category.key);
+            pref.setOrder(-255);
+            getPreferenceScreen().addPreference(pref);
+        }
+    }
     private int getVisiblePreferenceCount(PreferenceGroup group) {
         int visibleCount = 0;
         for (int i = 0; i < group.getPreferenceCount(); i++) {
