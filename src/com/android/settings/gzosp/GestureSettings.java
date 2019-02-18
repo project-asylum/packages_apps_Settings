@@ -41,7 +41,7 @@ public class GestureSettings extends SettingsPreferenceFragment implements Index
 
     @Override
     public int getMetricsCategory() {
-        return -1;
+        return 1;
     }
 
     public void onCreate(Bundle savedInstanceState) {

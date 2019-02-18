@@ -17,6 +17,7 @@ LOCAL_CERTIFICATE := platform
 LOCAL_PRIVILEGED_MODULE := true
 LOCAL_MODULE_TAGS := optional
 LOCAL_USE_AAPT2 := true
+LOCAL_PROGUARD_ENABLED := disabled
 
 LOCAL_SRC_FILES := $(call all-java-files-under, src)
 
@@ -35,7 +36,8 @@ LOCAL_STATIC_ANDROID_LIBRARIES := \
     com.asylum.utils \
     com.asylum.core \
     com.asylum.preference \
-    com.asylum.actions
+    com.asylum.actions \
+    com.asylum.keys
 
 LOCAL_JAVA_LIBRARIES := \
     bouncycastle \
