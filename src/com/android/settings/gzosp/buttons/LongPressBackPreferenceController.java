@@ -34,8 +34,6 @@ public class LongPressBackPreferenceController extends BasePreferenceController
 
     private Context mContext;
     private ListPreference mPref;
-
-    private int mDefaultBehavior;
     private final String mKey;
 
     public LongPressBackPreferenceController(Context context, String key) {
@@ -59,9 +57,9 @@ public class LongPressBackPreferenceController extends BasePreferenceController
         super.displayPreference(screen);
         mPref = (ListPreference) screen.findPreference(getPreferenceKey());
         if (mPref == null) return;
-        mDefaultBehavior = mContext.getResources().getInteger(
+        int defaultBehavior = mContext.getResources().getInteger(
                 com.android.internal.R.integer.config_longPressOnBackKeyBehavior);
-        int value = Settings.System.getInt(mContext.getContentResolver(), KEY_BACK_LONG_PRESS_ACTION, mDefaultBehavior);
+        int value = Settings.System.getInt(mContext.getContentResolver(), KEY_BACK_LONG_PRESS_ACTION, defaultBehavior);
         mPref.setValue(Integer.toString(value));
     }
 
@@ -75,7 +73,7 @@ public class LongPressBackPreferenceController extends BasePreferenceController
 
     @Override
     public CharSequence getSummary() {
-        int value = Settings.System.getInt(mContext.getContentResolver(), KEY_BACK_LONG_PRESS_ACTION, mDefaultBehavior);
+        int value = Settings.System.getInt(mContext.getContentResolver(), KEY_BACK_LONG_PRESS_ACTION, 0);
         int index = mPref.findIndexOfValue(Integer.toString(value));
         return mPref.getEntries()[index];
     }
