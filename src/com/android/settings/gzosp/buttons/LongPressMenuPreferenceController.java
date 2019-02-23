@@ -34,8 +34,6 @@ public class LongPressMenuPreferenceController extends BasePreferenceController
 
     private Context mContext;
     private ListPreference mPref;
-
-    private int mDefaultBehavior;
     private final String mKey;
 
     public LongPressMenuPreferenceController(Context context, String key) {
@@ -59,9 +57,9 @@ public class LongPressMenuPreferenceController extends BasePreferenceController
         super.displayPreference(screen);
         mPref = (ListPreference) screen.findPreference(getPreferenceKey());
         if (mPref == null) return;
-        mDefaultBehavior = mContext.getResources().getInteger(
+        int defaultBehavior = mContext.getResources().getInteger(
                 com.android.internal.R.integer.config_longPressOnMenuKeyBehavior);
-        int value = Settings.System.getInt(mContext.getContentResolver(), KEY_MENU_LONG_PRESS_ACTION, mDefaultBehavior);
+        int value = Settings.System.getInt(mContext.getContentResolver(), KEY_MENU_LONG_PRESS_ACTION, defaultBehavior);
         mPref.setValue(Integer.toString(value));
     }
 
@@ -75,7 +73,7 @@ public class LongPressMenuPreferenceController extends BasePreferenceController
 
     @Override
     public CharSequence getSummary() {
-        int value = Settings.System.getInt(mContext.getContentResolver(), KEY_MENU_LONG_PRESS_ACTION, mDefaultBehavior);
+        int value = Settings.System.getInt(mContext.getContentResolver(), KEY_MENU_LONG_PRESS_ACTION, 0);
         int index = mPref.findIndexOfValue(Integer.toString(value));
         return mPref.getEntries()[index];
     }
