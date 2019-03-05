@@ -21,6 +21,12 @@
     android:key="my_device_info_pref_screen"
     android:title="@string/about_settings">
 
+    <!-- Asylum Logo Header -->
+    <Preference
+        android:key="asm_logo"
+        android:order="-500"
+        android:layout="@layout/asylum_logo" />
+
     <com.android.settings.applications.LayoutPreference
         android:key="my_device_info_header"
         android:order="0"
