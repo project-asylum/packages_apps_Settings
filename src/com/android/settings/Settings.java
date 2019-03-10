@@ -166,4 +166,7 @@ public class Settings extends SettingsActivity {
     public static class AccountDashboardActivity extends SettingsActivity {}
     public static class SystemDashboardActivity extends SettingsActivity {}
 
+
+    // Additional settings
+    public static class AlertSliderSettingsActivity extends SettingsActivity { /* empty */ }
 }

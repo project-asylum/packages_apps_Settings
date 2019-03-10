@@ -18,10 +18,13 @@ package com.android.settings.notification;
 
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.res.Resources;
 import android.provider.Settings;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceScreen;
 import android.view.View;
 import android.widget.Button;
+import android.text.TextUtils;
 
 import com.android.internal.logging.nano.MetricsProto;
 import com.android.settings.R;
@@ -55,6 +58,11 @@ public class ZenModeButtonPreferenceController extends AbstractZenModePreference
     }
 
     @Override
+    public void displayPreference(PreferenceScreen screen) {
+        super.displayPreference(screen);
+    }
+
+    @Override
     public void updateState(Preference preference) {
         super.updateState(preference);
 
@@ -78,11 +86,18 @@ public class ZenModeButtonPreferenceController extends AbstractZenModePreference
     }
 
     private void updateButtons() {
+        Resources res = mContext.getResources();
+        boolean hasAlertSlider = res.getBoolean(com.android.internal.R.bool.config_hasAlertSlider)
+                && !TextUtils.isEmpty(res.getString(
+                        com.android.internal.R.string.alert_slider_state_path))
+                && !TextUtils.isEmpty(res.getString(
+                        com.android.internal.R.string.alert_slider_uevent_match_path));
         switch (getZenMode()) {
             case Settings.Global.ZEN_MODE_ALARMS:
             case Settings.Global.ZEN_MODE_IMPORTANT_INTERRUPTIONS:
             case Settings.Global.ZEN_MODE_NO_INTERRUPTIONS:
                 mZenButtonOff.setVisibility(View.VISIBLE);
+                mZenButtonOff.setEnabled(!hasAlertSlider);
                 mZenButtonOn.setVisibility(View.GONE);
                 break;
             case Settings.Global.ZEN_MODE_OFF:
@@ -90,6 +105,7 @@ public class ZenModeButtonPreferenceController extends AbstractZenModePreference
                 mZenButtonOff.setVisibility(View.GONE);
                 updateZenButtonOnClickListener();
                 mZenButtonOn.setVisibility(View.VISIBLE);
+                mZenButtonOn.setEnabled(!hasAlertSlider);
         }
     }
 

@@ -17,10 +17,12 @@
 package com.android.settings.notification;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.provider.Settings;
 import android.service.notification.ZenModeConfig;
 import android.support.v7.preference.Preference;
+import android.text.TextUtils;
 
 import com.android.settings.R;
 import com.android.settingslib.core.lifecycle.Lifecycle;
@@ -29,8 +31,16 @@ public class ZenModeSettingsFooterPreferenceController extends AbstractZenModePr
 
     protected static final String KEY = "footer_preference";
 
+    boolean mHasAlertSlider = false;
+
     public ZenModeSettingsFooterPreferenceController(Context context, Lifecycle lifecycle) {
         super(context, KEY, lifecycle);
+        Resources res = mContext.getResources();
+        mHasAlertSlider = res.getBoolean(com.android.internal.R.bool.config_hasAlertSlider)
+                && !TextUtils.isEmpty(res.getString(
+                        com.android.internal.R.string.alert_slider_state_path))
+                && !TextUtils.isEmpty(res.getString(
+                        com.android.internal.R.string.alert_slider_uevent_match_path));
     }
 
     @Override
@@ -41,6 +51,7 @@ public class ZenModeSettingsFooterPreferenceController extends AbstractZenModePr
             case Settings.Global.ZEN_MODE_IMPORTANT_INTERRUPTIONS:
                 return true;
             case Settings.Global.ZEN_MODE_OFF:
+                return mHasAlertSlider;
             default:
                 return false;
         }
@@ -57,9 +68,13 @@ public class ZenModeSettingsFooterPreferenceController extends AbstractZenModePr
 
         boolean isAvailable = isAvailable();
         preference.setVisible(isAvailable);
-        if (isAvailable) {
+        if (mHasAlertSlider) {
+            preference.setTitle(mContext.getString(
+                    R.string.zen_mode_settings_dnd_manual_indefinite_alert_slider));
+        } else if (isAvailable) {
             preference.setTitle(getFooterText());
         }
+
     }
 
     protected String getFooterText() {

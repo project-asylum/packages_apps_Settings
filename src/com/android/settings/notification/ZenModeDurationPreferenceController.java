@@ -18,8 +18,10 @@ package com.android.settings.notification;
 
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceScreen;
+import android.text.TextUtils;
 
 import com.android.settings.R;
 import com.android.settings.core.PreferenceControllerMixin;
@@ -51,7 +53,17 @@ public class ZenModeDurationPreferenceController extends AbstractZenModePreferen
     @Override
     public void displayPreference(PreferenceScreen screen) {
         super.displayPreference(screen);
-        screen.findPreference(KEY).setOnPreferenceClickListener(this);
+        Resources res = mContext.getResources();
+        boolean hasAlertSlider = res.getBoolean(com.android.internal.R.bool.config_hasAlertSlider)
+                && !TextUtils.isEmpty(res.getString(
+                        com.android.internal.R.string.alert_slider_state_path))
+                && !TextUtils.isEmpty(res.getString(
+                        com.android.internal.R.string.alert_slider_uevent_match_path));
+        if (hasAlertSlider) {
+            screen.findPreference(KEY).setEnabled(false);
+        } else {
+            screen.findPreference(KEY).setOnPreferenceClickListener(this);
+        }
     }
 
     @Override

@@ -20,12 +20,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.provider.Settings.Global;
 import android.service.notification.ZenModeConfig;
 import android.support.annotation.VisibleForTesting;
+import android.text.TextUtils;
 
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.settings.R;
@@ -38,6 +40,8 @@ public class DndCondition extends Condition {
     private static final String KEY_STATE = "state";
 
     private boolean mRegistered;
+
+    boolean mHasAlertSlider = false;
 
     @VisibleForTesting
     static final IntentFilter DND_FILTER =
@@ -53,6 +57,12 @@ public class DndCondition extends Condition {
         mReceiver = new Receiver();
         mManager.getContext().registerReceiver(mReceiver, DND_FILTER);
         mRegistered = true;
+        Resources res = mManager.getContext().getResources();
+        mHasAlertSlider = res.getBoolean(com.android.internal.R.bool.config_hasAlertSlider)
+                && !TextUtils.isEmpty(res.getString(
+                        com.android.internal.R.string.alert_slider_state_path))
+                && !TextUtils.isEmpty(res.getString(
+                        com.android.internal.R.string.alert_slider_uevent_match_path));
     }
 
     @Override
@@ -60,7 +70,7 @@ public class DndCondition extends Condition {
         NotificationManager notificationManager =
                 mManager.getContext().getSystemService(NotificationManager.class);
         mZen = notificationManager.getZenMode();
-        boolean zenModeEnabled = mZen != Settings.Global.ZEN_MODE_OFF;
+        boolean zenModeEnabled = (mZen != Settings.Global.ZEN_MODE_OFF) && !mHasAlertSlider;
         if (zenModeEnabled) {
             mConfig = notificationManager.getZenModeConfig();
         } else {
