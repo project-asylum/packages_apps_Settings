@@ -108,6 +108,8 @@ public class KeyCategoryFragment extends SettingsPreferenceFragment
                 if (key.order != 0) {
                     prefs.setOrder(key.order);
                 }
+                String action = getStringFromSettings(KeyParser.getPreferenceKey(key.keyCode), key.def);
+                pref.setValue(action);
                 prefs.addPreference(pref);
             }
         }
