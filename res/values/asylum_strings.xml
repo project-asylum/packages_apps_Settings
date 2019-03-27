@@ -64,4 +64,8 @@
     <string name="cpu_info">CPU</string>
     <string name="mem_info">Memory</string>
 
+    <!-- Show/Hide Navigation bar -->
+    <string name="navigation_bar_title">Navigation bar</string>
+    <string name="navigation_bar_title_summary">Enable on-screen navigation keys</string>
+
 </resources>
