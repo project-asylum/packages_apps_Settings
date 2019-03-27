@@ -60,4 +60,8 @@
     <string name="alert_slider_silent_mode_summary_off">Alarms only : everything except alarms and media will be silenced</string>
     <string name="zen_mode_settings_dnd_manual_indefinite_alert_slider">Note : Schedule and manually turning on/off DND is disabled on devices with alert slider.</string>
 
+    <!-- About device screen, CPU and RAM info. -->
+    <string name="cpu_info">CPU</string>
+    <string name="mem_info">Memory</string>
+
 </resources>

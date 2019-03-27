@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.android.internal.logging.nano.MetricsProto;
 import com.android.settings.R;
 import com.android.settings.core.instrumentation.InstrumentedDialogFragment;
+import com.android.settingslib.DeviceInfoUtils;
 
 public class HardwareInfoDialogFragment extends InstrumentedDialogFragment {
 
@@ -62,6 +63,12 @@ public class HardwareInfoDialogFragment extends InstrumentedDialogFragment {
         // Hardware rev
         setText(content, R.id.hardware_rev_label, R.id.hardware_rev_value,
                 SystemProperties.get("ro.boot.hardware.revision"));
+        // CPU
+        String cpuInfo = DeviceInfoUtils.getCPUInfo();
+        setText(content, R.id.cpu_rev_label, R.id.cpu_rev_value, cpuInfo);
+        // Memory
+        String memInfo = DeviceInfoUtils.getMemInfo();
+        setText(content, R.id.mem_rev_label, R.id.mem_rev_value, memInfo);
 
         return builder.setView(content).create();
     }
