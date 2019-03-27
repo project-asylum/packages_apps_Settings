@@ -17,20 +17,22 @@
 package com.android.settings.development;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.support.annotation.VisibleForTesting;
-import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceScreen;
 import android.view.IWindowManager;
 
+import com.android.settings.AnimationScalePreference;
 import com.android.settings.R;
 import com.android.settings.core.PreferenceControllerMixin;
 import com.android.settingslib.development.DeveloperOptionsPreferenceController;
 
 public class TransitionAnimationScalePreferenceController extends
         DeveloperOptionsPreferenceController implements Preference.OnPreferenceChangeListener,
-        PreferenceControllerMixin {
+        Preference.OnPreferenceClickListener, PreferenceControllerMixin {
 
     private static final String TRANSITION_ANIMATION_SCALE_KEY = "transition_animation_scale";
 
@@ -40,18 +42,19 @@ public class TransitionAnimationScalePreferenceController extends
     static final float DEFAULT_VALUE = 1;
 
     private final IWindowManager mWindowManager;
-    private final String[] mListValues;
-    private final String[] mListSummaries;
 
     public TransitionAnimationScalePreferenceController(Context context) {
         super(context);
 
         mWindowManager = IWindowManager.Stub.asInterface(
                 ServiceManager.getService(Context.WINDOW_SERVICE));
-        mListValues = context.getResources().getStringArray(
-                R.array.transition_animation_scale_values);
-        mListSummaries = context.getResources().getStringArray(
-                R.array.transition_animation_scale_entries);
+    }
+
+    @Override
+    public void displayPreference(PreferenceScreen screen) {
+        super.displayPreference(screen);
+
+        mPreference.setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -63,6 +66,14 @@ public class TransitionAnimationScalePreferenceController extends
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         writeAnimationScaleOption(newValue);
         return true;
+    }
+
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+        if (preference == mPreference) {
+            ((AnimationScalePreference) preference).click();
+        }
+        return false;
     }
 
     @Override
@@ -90,17 +101,9 @@ public class TransitionAnimationScalePreferenceController extends
         try {
             final float scale = mWindowManager.getAnimationScale(
                     TRANSITION_ANIMATION_SCALE_SELECTOR);
-            int index = 0; // default
-            for (int i = 0; i < mListValues.length; i++) {
-                float val = Float.parseFloat(mListValues[i]);
-                if (scale <= val) {
-                    index = i;
-                    break;
-                }
-            }
-            final ListPreference listPreference = (ListPreference) mPreference;
-            listPreference.setValue(mListValues[index]);
-            listPreference.setSummary(mListSummaries[index]);
+            final AnimationScalePreference animationScalePreference =
+                    (AnimationScalePreference) mPreference;
+            animationScalePreference.setScale(scale);
         } catch (RemoteException e) {
             // intentional no-op
         }

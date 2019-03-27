@@ -17,19 +17,22 @@
 package com.android.settings.development;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.ServiceManager;
 import android.support.annotation.VisibleForTesting;
-import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceScreen;
 import android.view.IWindowManager;
 
+import com.android.settings.AnimationScalePreference;
 import com.android.settings.R;
 import com.android.settings.core.PreferenceControllerMixin;
 import com.android.settingslib.development.DeveloperOptionsPreferenceController;
 
 public class AnimatorDurationScalePreferenceController extends DeveloperOptionsPreferenceController
-        implements Preference.OnPreferenceChangeListener, PreferenceControllerMixin {
+        implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener,
+        PreferenceControllerMixin {
 
     private static final String ANIMATOR_DURATION_SCALE_KEY = "animator_duration_scale";
 
@@ -39,17 +42,19 @@ public class AnimatorDurationScalePreferenceController extends DeveloperOptionsP
     static final float DEFAULT_VALUE = 1;
 
     private final IWindowManager mWindowManager;
-    private final String[] mListValues;
-    private final String[] mListSummaries;
 
     public AnimatorDurationScalePreferenceController(Context context) {
         super(context);
 
         mWindowManager = IWindowManager.Stub.asInterface(
                 ServiceManager.getService(Context.WINDOW_SERVICE));
-        mListValues = context.getResources().getStringArray(R.array.animator_duration_scale_values);
-        mListSummaries = context.getResources().getStringArray(
-                R.array.animator_duration_scale_entries);
+    }
+
+    @Override
+    public void displayPreference(PreferenceScreen screen) {
+        super.displayPreference(screen);
+
+        mPreference.setOnPreferenceClickListener(this);
     }
 
     @Override
@@ -61,6 +66,14 @@ public class AnimatorDurationScalePreferenceController extends DeveloperOptionsP
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         writeAnimationScaleOption(newValue);
         return true;
+    }
+
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+        if (preference == mPreference) {
+            ((AnimationScalePreference) preference).click();
+        }
+        return false;
     }
 
     @Override
@@ -87,17 +100,9 @@ public class AnimatorDurationScalePreferenceController extends DeveloperOptionsP
     private void updateAnimationScaleValue() {
         try {
             final float scale = mWindowManager.getAnimationScale(ANIMATOR_DURATION_SCALE_SELECTOR);
-            int index = 0; // default
-            for (int i = 0; i < mListValues.length; i++) {
-                float val = Float.parseFloat(mListValues[i]);
-                if (scale <= val) {
-                    index = i;
-                    break;
-                }
-            }
-            final ListPreference listPreference = (ListPreference) mPreference;
-            listPreference.setValue(mListValues[index]);
-            listPreference.setSummary(mListSummaries[index]);
+            final AnimationScalePreference animationScalePreference =
+                    (AnimationScalePreference) mPreference;
+            animationScalePreference.setScale(scale);
         } catch (RemoteException e) {
             // intentional no-op
         }
